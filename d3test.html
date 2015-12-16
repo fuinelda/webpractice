@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv='text/css' charset='utf8' />
+	<script src='http://d3js.org/d3.v3.min.js'></script>
+</head>
+<body>
+	hello, wordl!
+	<svg class = 'screen' width=900 height= 600>
+		<path d='m 100 501 q 151 -200 300 0' style='stroke:red;stroke-width:3;' class='lfoot' />
+	</svg>
+	<button class='btn' >click!</button>
+	<script>
+		var screen = d3.select('.screen');
+		var landscape = screen.append('line')
+		.attr('x1',0).attr('y1',500)
+		.attr('x2',900).attr('y2',500)
+		.attr('style','stroke:black;stroke-width:3;');
+		/*var lfoot = screen.append('path')
+		.attr('d','m 100 500 q 150 -200 300 0')
+		.attr('style','stroke:red;stroke-width:3;')
+		.attr('class','lfoot');
+		d3.transition()
+	.attr("x",200)
+	.duration(1000);*/
+		d3.select('.btn').on('click',function(){
+				d3.select('.lfoot').transition().style('fill','blue')
+				.attr('d','m 200 501 q 151 -200 300 0');
+				});
+	</script>
+</body>
+</html>
