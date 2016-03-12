@@ -23,9 +23,14 @@
 		d3.transition()
 	.attr("x",200)
 	.duration(1000);*/
+		lfoot = d3.select('.lfoot');
 		d3.select('.btn').on('click',function(){
-				d3.select('.lfoot').transition().style('fill','blue')
-				.attr('d','m 200 501 q 151 -200 300 0');
+				lfoot.transition()
+				.attr('transform','rotate(10,100,500) translate(0,-50)')
+				.each('end',function(){
+					d3.select(this).transition().duration(1000)
+				.attr('transform','rotate(10) translate(100,-200)');
+				});
 				});
 	</script>
 </body>

@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv = 'text/css' charset='utf-8'></meta>
+<script>
+	function clicked(e){
+		var xc = e.clientX;
+		alert('test!!' + xc);
+	}
+
+
+</script>
+</head>
+<body>
+angular.js와 캔버스 기능 등을 사용해서 그림 그리기 실험<br />
+<canvas class = 'c1' style='width:500px;height:500px;background:#990000' onclick='clicked(event)'></canvas>
+	&nbsp;
+<canvas id = 'c2' style='width:500px;height:500px;background:#995400'>
+</canvas>
+<script>
+	var can2 = document.getElementById('c2');
+console.log(can2);
+	document.getElementById('c2').addEventListener('click',function() {alert('this 2222');});
+</script>
+</body>
+</html>
