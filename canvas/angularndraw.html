@@ -8,14 +8,37 @@ window.onload = function() {
 	var ctx = can2.getContext('2d');
 	
 	var draw = false;
+	var color = '#000000';
+
+	var colors = ['000000','606060','802020','208020','202080','ffffff'];
 	
+	document.getElementById('colorpick').innerHTML = cpallette(colors);
+	
+	document.getElementById('pcurcolor').style.background = color;
+
+	//색상 고르고 팔레트 가장 아래에 표시까지
+	for(c in colors){
+		document.getElementById(colors[c]).addEventListener('click',function(e) {
+				console.log(e.target.id);
+				color = '#' + e.target.id;
+				document.getElementById('pcurcolor').style.background = color;
+				});
+	}
+	
+	//자유선 그리기 - stroke를 이용함
 	can2.addEventListener('mousedown', function(e) {
+			var cx = (e.offsetX)?e.offsetX:0;
+			var cy = (e.offsetY)?e.offsetY:0;
+			
 			ctx.beginPath();
 			draw = true;
+			console.log(color);
+			ctx.strokeStyle = color;
 			});
 	can2.addEventListener('mousemove',function(e) {
 			var cx = (e.offsetX)?e.offsetX:0;
 			var cy = (e.offsetY)?e.offsetY:0;
+			
 			document.getElementById('coords').innerHTML = 'X : ' + cx + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y : ' + cy;
 			if(draw){
 			ctx.lineTo(cx,cy);
@@ -26,11 +49,35 @@ window.onload = function() {
 			draw = false;
 			});
 };
+
+//color pallete 만들기
+function cpallette(colors){
+	var table = '<table><tr>';
+	for(c in colors){
+		table += '<td id = "' + colors[c] + '" style = "background:#' + colors[c] + ';width:1em;border:1px solid #aaa">&nbsp;</td>';
+		
+		if(c%2 == 1){
+			table += '</tr><tr>';
+		}
+	}
+	table += '</tr><tr><td colspan = 2 id="pcurcolor" style="border:1px solid black;">&nbsp;</td>';
+	table += '</tr></table>';
+
+	return table;
+}
 </script>
 </head>
 <body>
 angular.js와 캔버스 기능 등을 사용해서 그림 그리기 실험<br />
-<canvas id = 'c2' width=500 height=500 style='width:500px;height:500px;background:#995400'>
-</canvas><p id = 'coords'>zzz</p>
+<div>
+	<canvas id = 'c2' width=500 height=500 style='border: 1px solid gray;'></canvas>
+	<div style='vertical-align:top;border:1px solid red;display:inline;display:inline-block;'><p>도구들</p>
+		<div id = 'colorpick' style='border:1px dotted green;'>
+			<span id = '000000' style='background:#000000'>0</span>
+			<span id = '880000' style='background:#880000'>1</span>
+		</div>
+	</div>
+	<p id = 'coords'>커서 좌표</p>
+</div>
 </body>
 </html>
