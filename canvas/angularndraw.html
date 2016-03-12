@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv = 'text/css' charset='utf-8'></meta>
+<script>
+window.onload = function() {
+	var can2 = document.getElementById('c2');
+	var ctx = can2.getContext('2d');
+	
+	var draw = false;
+	
+	can2.addEventListener('mousedown', function(e) {
+			ctx.beginPath();
+			draw = true;
+			});
+	can2.addEventListener('mousemove',function(e) {
+			var cx = (e.offsetX)?e.offsetX:0;
+			var cy = (e.offsetY)?e.offsetY:0;
+			document.getElementById('coords').innerHTML = 'X : ' + cx + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y : ' + cy;
+			if(draw){
+			ctx.lineTo(cx,cy);
+			ctx.stroke();
+			}
+	});
+	can2.addEventListener('mouseup',function(e) {
+			draw = false;
+			});
+};
+</script>
+</head>
+<body>
+angular.js와 캔버스 기능 등을 사용해서 그림 그리기 실험<br />
+<canvas id = 'c2' width=500 height=500 style='width:500px;height:500px;background:#995400'>
+</canvas><p id = 'coords'>zzz</p>
+</body>
+</html>
