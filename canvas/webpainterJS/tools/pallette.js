@@ -10,10 +10,10 @@ function cpallette(colors){
 		}
 
 		td = document.createElement('td');
-		td.style = 'background:#' + colors[c] + ';width:1em;border:1px solid #aaa;color:#'+colors[c];
-		empty = document.createTextNode('.');
+		td.style = 'background:#' + colors[c] + ';width:1em;height:1em;border:1px solid #aaa;';
+		td.id = colors[c];
+		empty = document.createTextNode('');
 		td.appendChild(empty);
-		console.log('adbv',td);
 		tr.appendChild(td);
 				
 		if(c%2 == 1){
@@ -23,12 +23,11 @@ function cpallette(colors){
 
 	tr = document.createElement('tr');
 	td = document.createElement('td');
-	td.style = 'border:1px solid black;';
+	td.style = 'border:1px solid black;height:1em;';
 	td.id = 'pcurcolor';
 	td.colSpan = 2;
-	empty = document.createTextNode('.');
+	empty = document.createTextNode('');
 	td.appendChild(empty);
-	console.log('adbv',td);
 	tr.appendChild(td);
 	table.appendChild(tr);
 
