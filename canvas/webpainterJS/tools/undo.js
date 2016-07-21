@@ -1,10 +1,18 @@
 var cHistory = [];
 var cStep = -1;
 
-function cPush(canvas) {
+function cPush(ctx, canvas, curcanvas) {
 	cStep++;
+	console.log('aa');
 	if (cStep < cHistory.length) {cHistory.length = cStep; }
-	cHistory.push(canvas.toDataURL());
+	var canPic = new Image();
+	canPic.src = curcanvas.toDataURL();
+	//ctx.clearRect(0, 0, canvas.width, canvas.height);	
+	ctx.drawImage(canPic, 0, 0);
+	if (cHistory[cStep] != curcanvas.toDataURL()) {
+		
+		cHistory.push(canvas.toDataURL());
+	}
 }
 
 function cUndo(ctx, canvas) {
@@ -20,10 +28,11 @@ function cUndo(ctx, canvas) {
 		cStep--;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	}
+	console.log('undohistory', cStep, cHistory);
 }
 
 function cRedo(ctx, canvas) {
-	if(cStep < cHistory.length - 1){
+	if(cStep < cHistory.length-1){
 		cStep++;
 		var canPic = new Image();
 		canPic.src = cHistory[cStep];
@@ -32,6 +41,7 @@ function cRedo(ctx, canvas) {
 			ctx.drawImage(canPic, 0, 0);
 		}
 	}
+	console.log('redohistory', cStep, cHistory);
 }
 
 function insertURBtn(toolbox, jc) {
@@ -39,11 +49,11 @@ function insertURBtn(toolbox, jc) {
 	var rdbtn = document.createElement('div');
 
 	udbtn.addEventListener('click',function(e) {
-		cUndo(jc.ctx, jc.canvas);
+		cUndo(jc.octx, jc.ocanvas);
 	});
 
 	rdbtn.addEventListener('click',function(e) {
-		cRedo(jc.ctx, jc.canvas);
+		cRedo(jc.octx, jc.ocanvas);
 	});
 
 	udbtn.appendChild(document.createTextNode('Undo'));

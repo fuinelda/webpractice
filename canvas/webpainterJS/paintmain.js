@@ -1,5 +1,8 @@
 //tools 등록
-var jsSrcs = ['/tools/pallette.js','/tools/pencil.js','/tools/undo.js'];
+var jsSrcs = ['/tools/pallette.js',
+	'/tools/pencil.js',
+	'/tools/rect.js',
+	'/tools/undo.js'];
 
 for (jsSrc in jsSrcs) {
 	document.write('<script src="./webpainterJS' + jsSrcs[jsSrc] + '"></script>');
@@ -9,16 +12,27 @@ for (jsSrc in jsSrcs) {
 window.onload = function() {
 	var canvas = document.getElementById('c2');
 	var ctx = canvas.getContext('2d');
-	
+
+	var curtool;
+	var curcanvas = document.createElement('canvas');
+	curcanvas.id = 'curCanvas';
+	curcanvas.width = canvas.width;
+	curcanvas.height = canvas.height;
+	curcanvas.style = 'border:1px solid gray;position:absolute;top:0px;left:0px;';
+	canvas.parentNode.insertBefore(curcanvas,document.getElementById('tools'));
+	var curctx = curcanvas.getContext('2d');
 	var draw = false;
 	var color = '#000000';
 
 	var colors = ['000000','0000ff','ffff00','ff0000','606060','ffffff'];
-	var jsonCanvas = {'canvas': canvas, 
-			'ctx' : ctx, 
+	var jsonCanvas = {'ocanvas' : canvas,
+			'octx' : ctx,
+			'canvas': curcanvas, 
+			'ctx' : curctx,
 			'draw' : draw,
 			'color' : color,
-			'colors' : colors};
+			'colors' : colors,
+			'curtool' : curtool};
 
 	toolCtrl(jsonCanvas);
 	
@@ -41,6 +55,17 @@ function toolCtrl(jc) {
 	var cp = cpallette(jc.colors);
 	toolbox.appendChild(cp);
 
-	pencil(jc);
+	//pencil(jc);
+	insertPCBtn(toolbox, jc);
+	insertRectBtn(toolbox, jc);
 	insertURBtn(toolbox,jc);
+}
+
+//선택된 툴 표시
+function toolSelected(Element) {
+	var toolbtns = document.getElementById('tools').getElementsByClassName('tool');
+	for (i in toolbtns) {
+		toolbtns[i].style = 'background:;';	
+	}
+	Element.style = 'background:#bbb';
 }
