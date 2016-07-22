@@ -1,0 +1,249 @@
+
+	function start(){
+		var tool;
+		var default_option = 'pencil';
+		var restorePoints = [];
+		function init () {
+			canvaso = document.getElementById('myCanvas');
+			contexto = canvaso.getContext('2d');
+			var container = canvaso.parentNode;
+			canvas = document.createElement('canvas');
+			canvas.id     = 'canvasTemp';
+			canvas.width  = canvaso.width;
+			canvas.height = canvaso.height;
+			container.appendChild(canvas);
+			context = canvas.getContext('2d');
+			
+			var drawOPtion = document.getElementById('selOption');
+			drawOPtion.addEventListener('change', ev_tool_change, false);
+			// Activate the default tool.
+			if (myDrawTools[default_option]) {
+				myObj = new myDrawTools[default_option]();
+				drawOPtion.value = default_option;
+			}
+			
+			var undoMyCanvas = document.getElementById('undoCanvas');
+			undoMyCanvas.addEventListener('click', undoCanvasState, false);
+			
+			var MyCanvasImg = document.getElementById('saveCanvasImage');
+			MyCanvasImg.addEventListener('click', saveMyCanvasImg, false);
+			
+			
+			// Attach the mousedown, mousemove and mouseup event listeners.
+			canvas.addEventListener('mousedown', canvasEvent, false);
+			canvas.addEventListener('mousemove', canvasEvent, false);
+			canvas.addEventListener('mouseup',   canvasEvent, false);
+		}
+		
+		function saveMyCanvasImg()
+		{
+			window.open(canvaso.toDataURL("image/png"));
+		}
+		function undoCanvasState()
+		{
+			if (restorePoints.length > 0) {
+				var oImg = new Image();
+				
+				oImg.onload = function() {
+					var canvas = document.getElementById("myCanvas");
+					var canvasContext = canvas.getContext("2d");		
+					canvasContext.clearRect(0, 0, canvas.width, canvas.height);		
+					canvasContext.drawImage(oImg, 0, 0);
+				}
+				oImg.src = restorePoints.pop();
+				
+			}
+		}
+		
+		function canvasEvent (ev) {
+			if (ev.layerX || ev.layerX == 0) { // Firefox
+				ev._x = ev.layerX;
+				ev._y = ev.layerY;
+			} else if (ev.offsetX || ev.offsetX == 0) { // Opera
+				ev._x = ev.offsetX;
+				ev._y = ev.offsetY;
+			}
+			var func = myObj[ev.type];
+			if (func) {
+				func(ev);
+			}
+		}
+		
+		 function ev_tool_change (ev) {
+			if (myDrawTools[this.value]) {
+				myObj = new myDrawTools[this.value]();
+			}
+		}
+		
+		function saveCanvasState () {
+			var imgSrc = canvaso.toDataURL("image/png");
+			restorePoints.push(imgSrc);
+		}
+	
+		function savsPrevRect () {
+			saveCanvasState();
+			contexto.drawImage(canvas, 0, 0);
+			context.clearRect(0, 0, canvas.width, canvas.height);
+		}
+		
+		var myDrawTools = {};
+		myDrawTools.circle = function () {
+			var myCircleCon = this;
+			this.started = false;
+		
+			this.mousedown = function (ev) {
+				myCircleCon.started = true;
+				myCircleCon.x0 = ev._x;
+				myCircleCon.y0 = ev._y;
+				
+				var rint = Math.round(0xffffff * Math.random());
+				myCircleCon.randColor = ('#0' + rint.toString(16)).replace(/^#0([0-9a-f]{6})$/i, '#$1');
+			};
+		
+			this.mousemove = function (ev) {
+				if (!myCircleCon.started) {
+					return;
+				}
+			
+				var x = Math.min(ev._x,  myCircleCon.x0),
+					y = Math.min(ev._y,  myCircleCon.y0),
+					w = Math.abs(ev._x - myCircleCon.x0),
+					h = Math.abs(ev._y - myCircleCon.y0);
+				
+				
+				context.clearRect(0, 0, canvas.width, canvas.height);
+			
+				if (!w || !h) {
+					return;
+				}
+				
+				context.beginPath();
+				context.arc(x, y,w,0,2*Math.PI);
+				context.fillStyle = myCircleCon.randColor;
+				context.fill();
+				context.lineWidth = 3;
+				context.strokeStyle = '#003300';
+				context.stroke();
+				
+			};
+		
+			this.mouseup = function (ev) {
+				if (myCircleCon.started) {
+					myCircleCon.mousemove(ev);
+					myCircleCon.started = false;
+					savsPrevRect();
+				}
+			};
+		};
+		
+		
+		myDrawTools.rect = function () {
+			var myRectCon = this;
+			this.started = false;
+		
+			this.mousedown = function (ev) {
+				myRectCon.started = true;
+				myRectCon.x0 = ev._x;
+				myRectCon.y0 = ev._y;
+				
+				var rint = Math.round(0xffffff * Math.random());
+				myRectCon.randColor = ('#0' + rint.toString(16)).replace(/^#0([0-9a-f]{6})$/i, '#$1');
+			};
+		
+			this.mousemove = function (ev) {
+				if (!myRectCon.started) {
+					return;
+				}
+			
+				var x = Math.min(ev._x,  myRectCon.x0),
+					y = Math.min(ev._y,  myRectCon.y0),
+					w = Math.abs(ev._x - myRectCon.x0),
+					h = Math.abs(ev._y - myRectCon.y0);
+				
+				
+				context.clearRect(0, 0, canvas.width, canvas.height);
+			
+				if (!w || !h) {
+					return;
+				}
+				context.fillStyle= myRectCon.randColor;
+				context.fillRect(x, y, w, h);
+			};
+		
+			this.mouseup = function (ev) {
+				if (myRectCon.started) {
+					myRectCon.mousemove(ev);
+					myRectCon.started = false;
+					savsPrevRect();
+				}
+			};
+		};
+		
+		 myDrawTools.line = function () {
+			var myLineCon = this;
+			this.started = false;
+		
+			this.mousedown = function (ev) {
+			myLineCon.started = true;
+			myLineCon.x0 = ev._x;
+			myLineCon.y0 = ev._y;
+			};
+		
+			this.mousemove = function (ev) {
+			if (!myLineCon.started) {
+				return;
+			}
+		
+			context.clearRect(0, 0, canvas.width, canvas.height);
+		
+			context.beginPath();
+			context.strokeStyle = '#000000';
+			context.lineWidth = 3;
+			context.moveTo(myLineCon.x0, myLineCon.y0);
+			context.lineTo(ev._x,   ev._y);
+			context.stroke();
+			context.closePath();
+			};
+		
+			this.mouseup = function (ev) {
+			if (myLineCon.started) {
+				myLineCon.mousemove(ev);
+				myLineCon.started = false;
+				savsPrevRect();
+			}
+			};
+		};
+		myDrawTools.pencil = function () {
+			var myPenCon = this;
+			this.started = false;
+			
+			this.mousedown = function (ev) {
+				context.beginPath();
+				context.strokeStyle = '#000000';
+				context.lineWidth = 3;
+				context.moveTo(ev._x, ev._y);
+				myPenCon.started = true;
+			};
+		
+			this.mousemove = function (ev) {
+			if (myPenCon.started) {
+				context.lineTo(ev._x, ev._y);
+				context.stroke();
+			}
+			};
+			
+			this.mouseup = function (ev) {
+			if (myPenCon.started) {
+				myPenCon.mousemove(ev);
+				myPenCon.started = false;
+				savsPrevRect();
+			}
+			};
+		};
+	
+		init();
+		
+	
+	}
+	
+	

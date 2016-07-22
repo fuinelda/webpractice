@@ -3,16 +3,11 @@ var cStep = -1;
 
 function cPush(ctx, canvas, curcanvas) {
 	cStep++;
-	console.log('aa');
 	if (cStep < cHistory.length) {cHistory.length = cStep; }
 	var canPic = new Image();
 	canPic.src = curcanvas.toDataURL();
-	//ctx.clearRect(0, 0, canvas.width, canvas.height);	
 	ctx.drawImage(canPic, 0, 0);
-	if (cHistory[cStep] != curcanvas.toDataURL()) {
-		
-		cHistory.push(canvas.toDataURL());
-	}
+	cHistory.push(canvas.toDataURL());
 }
 
 function cUndo(ctx, canvas) {
@@ -28,7 +23,6 @@ function cUndo(ctx, canvas) {
 		cStep--;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	}
-	console.log('undohistory', cStep, cHistory);
 }
 
 function cRedo(ctx, canvas) {
@@ -41,7 +35,6 @@ function cRedo(ctx, canvas) {
 			ctx.drawImage(canPic, 0, 0);
 		}
 	}
-	console.log('redohistory', cStep, cHistory);
 }
 
 function insertURBtn(toolbox, jc) {
