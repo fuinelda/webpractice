@@ -4,6 +4,7 @@ var jsSrcs = ['/tools/pallette.js',
 	'/tools/rect.js',
 	'/tools/line.js',
 	'/tools/circle.js',
+	'/tools/bucket.js',
 	'/tools/undo.js'];
 
 for (jsSrc in jsSrcs) {
@@ -60,8 +61,9 @@ function toolCtrl(jc) {
 	insertRectBtn(toolbox, jc);
 	insertLnBtn(toolbox, jc);
 	insertCircleBtn(toolbox, jc);
+	insertBucketBtn(toolbox,jc);
 	insertURBtn(toolbox,jc);
-	lWidth(toolbox, jc)
+	lWidth(toolbox, jc);
 }
 
 
@@ -138,7 +140,7 @@ function toolCommonEvents(jc) {
 	jc.canvas.addEventListener('mouseup',function(e) {
 		jc.ctx.stroke();
 		jc.draw = false;
-		cPush(jc.octx, jc.ocanvas, jc.canvas);
+		if (jc.curtool != 'paintbucket') cPush(jc.octx, jc.ocanvas, jc.canvas);
 		jc.ctx.clearRect(0, 0, jc.canvas.width, jc.canvas.height);
 	});
 }

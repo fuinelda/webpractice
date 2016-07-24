@@ -8,6 +8,7 @@ function cPush(ctx, canvas, curcanvas) {
 	canPic.src = curcanvas.toDataURL();
 	ctx.drawImage(canPic, 0, 0);
 	cHistory.push(canvas.toDataURL());
+	//console.log('push',cStep, cHistory);
 }
 
 function cUndo(ctx, canvas) {
@@ -23,6 +24,8 @@ function cUndo(ctx, canvas) {
 		cStep--;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	}
+	
+	//console.log('undo',cStep, cHistory);
 }
 
 function cRedo(ctx, canvas) {
@@ -35,6 +38,7 @@ function cRedo(ctx, canvas) {
 			ctx.drawImage(canPic, 0, 0);
 		}
 	}
+	//console.log('redo',cStep, cHistory);
 }
 
 function insertURBtn(toolbox, jc) {
