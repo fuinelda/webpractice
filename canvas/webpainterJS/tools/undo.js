@@ -6,8 +6,10 @@ function cPush(ctx, canvas, curcanvas) {
 	if (cStep < cHistory.length) {cHistory.length = cStep; }
 	var canPic = new Image();
 	canPic.src = curcanvas.toDataURL();
-	ctx.drawImage(canPic, 0, 0);
-	cHistory.push(canvas.toDataURL());
+	canPic.onload = function() {
+		ctx.drawImage(canPic, 0, 0);
+		cHistory.push(canvas.toDataURL());
+	}
 	//console.log('push',cStep, cHistory);
 }
 
