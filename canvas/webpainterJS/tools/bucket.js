@@ -69,7 +69,7 @@ function floodFill(jc, cx, cy, data, rgba, paintcolor) {
 			
 			fillColor(data, rgba, paintcolor, pixelpos);
 			
-			if(x >= 0) {
+			if(x > 0) {
 				if(matchcolors(data, pixelpos - 4, rgba, paintcolor)) {
 					//console.log(x,y,rgba);
 					if(!reachleft) {
@@ -80,7 +80,7 @@ function floodFill(jc, cx, cy, data, rgba, paintcolor) {
 					reachleft = false;
 				}
 			}
-			if(x < jc.ocanvas.width) {
+			if(x < jc.ocanvas.width - 1) {
 				if(matchcolors(data, pixelpos + 4, rgba, paintcolor)) {
 					if(!reachright) {
 						pixelstack.push([x + 1, y]);
