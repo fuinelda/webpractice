@@ -10,8 +10,8 @@ function bucket(jc){
 			var i = (cy * jc.ocanvas.width + cx) * 4;
 			var rgba = getRgba(data, cx, cy, jc.ocanvas.width);
 			var paintcolor = colorCodetoRGBA(jc.color);
-			//console.log(paintcolor,data);
-			if(rgba[0] == paintcolor[0] && rgba[1] == paintcolor[1] && rgba[2] == paintcolor[2]) {return;}
+			// console.log(paintcolor,rgba);
+			if(rgba[0] == paintcolor[0] && rgba[1] == paintcolor[1] && rgba[2] == paintcolor[2] && rgba[3] == paintcolor[3]) {return;}
 			imgdata.data = floodFill(jc, cx, cy, data, rgba, paintcolor);
 			
 			jc.octx.putImageData(imgdata,0 ,0 );
@@ -28,9 +28,9 @@ function getRgba(data, cx, cy, width) {
 	return [data[i], data[i+1], data[i+2], data[i+3]];
 }
 
-/***컬러코드를 rgba값으로 변형 후 리턴*/
+/***컬러코드를 rgba값으로 변형 후 리턴. 임시로 알파값 부여 (255)*/
 function colorCodetoRGBA(color) {
-	return [parseInt(color.substr(1,2), 16), parseInt(color.substr(3,2), 16), parseInt(color.substr(5,2), 16)];
+	return [parseInt(color.substr(1,2), 16), parseInt(color.substr(3,2), 16), parseInt(color.substr(5,2), 16), 255];
 }
 
 function fillColor(data, rgba, paintcolor, i) {
@@ -99,10 +99,10 @@ function floodFill(jc, cx, cy, data, rgba, paintcolor) {
 
 function matchcolors(data, pixelpos, rgba, color) {
 	var currgba = [data[pixelpos], data[pixelpos+1], data[pixelpos+2], data[pixelpos+3]];
-	if (currgba[0] != rgba[0] || currgba[1] != rgba[1] || currgba[2] != rgba[2]) return false;
-	if (currgba[0] == rgba[0] && currgba[1] == rgba[1] && currgba[2] == rgba[2]) return true;
+	if (currgba[0] != rgba[0] || currgba[1] != rgba[1] || currgba[2] != rgba[2] || currgba[3] != rgba[3]) return false;
+	if (currgba[0] == rgba[0] && currgba[1] == rgba[1] && currgba[2] == rgba[2] && currgba[3] == rgba[3]) return true;
 	//else return false;
-	if (currgba[0] == color[0] && currgba[1] == color[1] && currgba[2] == color[2]) return false;
+	if (currgba[0] == color[0] && currgba[1] == color[1] && currgba[2] == color[2] && currgba[3] == color[3]) return false;
 	return true;
 }
 //페인트통 추가
