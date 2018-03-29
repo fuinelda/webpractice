@@ -19,6 +19,11 @@ function cpallette(jc){
 			document.getElementsByName('colorPickInput')[0].value = jc.color;
 			//jc.color = color;
 		});
+		td.addEventListener('touchstart',function(e) {
+			jc.color = '#' + e.target.id;
+			document.getElementById('pcurcolor').style.background = jc.color;
+			document.getElementsByName('colorPickInput')[0].value = jc.color;
+		});
 		td.appendChild(empty);
 		tr.appendChild(td);
 				

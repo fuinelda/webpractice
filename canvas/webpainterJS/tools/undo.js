@@ -55,13 +55,16 @@ function insertURBtn(toolbox, jc) {
 		cRedo(jc.octx, jc.ocanvas);
 	});
 
+	udbtn.addEventListener('touchstart',function(e) {
+		cUndo(jc.octx, jc.ocanvas);
+	});
+
+	rdbtn.addEventListener('touchstart',function(e) {
+		cRedo(jc.octx, jc.ocanvas);
+	});
+
 	udbtn.appendChild(document.createTextNode('Undo'));
 	rdbtn.appendChild(document.createTextNode('Redo'));
-	
-	/*udbtn.addEventListener('click',function(e) {
-		console.log('cHistory',cHistory);
-		cUndo(ctx);
-	});*/
 
 	toolbox.appendChild(udbtn);
 	toolbox.appendChild(rdbtn);

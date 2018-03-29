@@ -20,6 +20,28 @@ function bucket(jc){
 		}
 		
 	});
+	jc.canvas.addEventListener('touchstart', function(e){
+		var touches = e.changedTouches;
+		var targetRect = e.target.getBoundingClientRect();
+		var cx = (touches[0].pageX && touches[0].pageX - (targetRect.left + window.scrollX) > 0)?touches[0].pageX - (targetRect.left + window.scrollX):0;
+		var cy = (touches[0].pageY && touches[0].pageY - (targetRect.top + window.scrollY) > 0)?touches[0].pageY - (targetRect.top + window.scrollY):0;
+		
+		if (jc.curtool == 'paintbucket') {
+			var imgdata = jc.octx.getImageData(0, 0, jc.ocanvas.width, jc.ocanvas.height);
+			var data = imgdata.data;
+			var i = (cy * jc.ocanvas.width + cx) * 4;
+			var rgba = getRgba(data, cx, cy, jc.ocanvas.width);
+			var paintcolor = colorCodetoRGBA(jc.color);
+			// console.log(paintcolor,rgba);
+			if(rgba[0] == paintcolor[0] && rgba[1] == paintcolor[1] && rgba[2] == paintcolor[2] && rgba[3] == paintcolor[3]) {return;}
+			imgdata.data = floodFill(jc, cx, cy, data, rgba, paintcolor);
+			
+			jc.octx.putImageData(imgdata,0 ,0 );
+			
+			cPush(jc.octx, jc.ocanvas, jc.canvas);
+		}
+		
+	});
 }
 
 //현 위치의 rgba값을 받아옴
@@ -113,8 +135,13 @@ function insertBucketBtn(toolbox, jc) {
 	bkbtn.addEventListener('click', function(e) {
 		if(jc.curtool != 'paintbucket') {
 			toolSelected(this);
-			jc.curtool = 'paintbucket';
-						
+			jc.curtool = 'paintbucket';				
+		}
+	});
+	bkbtn.addEventListener('touchstart', function(e) {
+		if(jc.curtool != 'paintbucket') {
+			toolSelected(this);
+			jc.curtool = 'paintbucket';				
 		}
 	});
 	bucket(jc);

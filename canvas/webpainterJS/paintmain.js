@@ -143,4 +143,25 @@ function toolCommonEvents(jc) {
 		if (jc.curtool != 'paintbucket') cPush(jc.octx, jc.ocanvas, jc.canvas);
 		jc.ctx.clearRect(0, 0, jc.canvas.width, jc.canvas.height);
 	});
+	//터치 이벤트
+	jc.canvas.addEventListener('touchstart', function(e) {
+		var touches = e.changedTouches;
+		var targetRect = e.target.getBoundingClientRect();
+		var startX = (touches[0].pageX && touches[0].pageX - (targetRect.left + window.scrollX) > 0)?touches[0].pageX - (targetRect.left + window.scrollX):0;
+		var startY = (touches[0].pageY && touches[0].pageY - (targetRect.top + window.scrollY) > 0)?touches[0].pageY - (targetRect.top + window.scrollY):0;
+		jc.starts = {'x' : startX, 'y' : startY};
+
+		jc.ctx.beginPath();
+		jc.draw = true;
+		jc.ctx.strokeStyle = jc.color;		
+		jc.ctx.lineWidth = jc.strokewidth;
+		jc.ctx.lineCap = jc.linecap;
+		jc.ctx.lineJoin = jc.linejoin;
+	});
+	jc.canvas.addEventListener('touchend',function(e) {
+		jc.ctx.stroke();
+		jc.draw = false;
+		if (jc.curtool != 'paintbucket') cPush(jc.octx, jc.ocanvas, jc.canvas);
+		jc.ctx.clearRect(0, 0, jc.canvas.width, jc.canvas.height);
+	});
 }
