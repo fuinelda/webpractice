@@ -5,11 +5,13 @@ var jsSrcs = ['/tools/pallette.js',
 	'/tools/line.js',
 	'/tools/circle.js',
 	'/tools/bucket.js',
-	'/tools/undo.js'];
+	'/tools/undo.js',
+	'/tools/layer.js'];
 
 for (jsSrc in jsSrcs) {
 	document.write('<script src="./webpainterJS' + jsSrcs[jsSrc] + '"></script>');
 }
+
 
 //본편
 window.onload = function() {
@@ -18,7 +20,7 @@ window.onload = function() {
 
 	var curtool;
 	var curcanvas = document.createElement('canvas');
-	curcanvas.id = 'curCanvas';
+	curcanvas.id = 'layer0';
 	curcanvas.width = canvas.width;
 	curcanvas.height = canvas.height;
 	curcanvas.style = 'border:1px solid gray;position:absolute;top:0px;left:0px;';
@@ -29,7 +31,10 @@ window.onload = function() {
 	var strokewidth = 3;
 	var linecap = 'round';
 	var linejoin = 'round';
+	
 
+	layers.push({name: 'layer0', canvas: curcanvas, ctx: curctx});
+	
 	var colors = ['000000','0000ff','ffff00','ff0000','606060','ffffff'];
 	var jsonCanvas = {'ocanvas' : canvas,
 			'octx' : ctx,
@@ -42,7 +47,8 @@ window.onload = function() {
 			'strokewidth' : strokewidth,
 			'linecap' : linecap,
 			'linejoin' : linejoin,
-			'starts' : {'x' : 0 , 'y' : 0}};
+			'starts' : {'x' : 0 , 'y' : 0}
+		};
 
 	toolCtrl(jsonCanvas);
 	
@@ -63,6 +69,7 @@ function toolCtrl(jc) {
 	insertCircleBtn(toolbox, jc);
 	insertBucketBtn(toolbox,jc);
 	insertURBtn(toolbox,jc);
+	insertLayerTool();
 	lWidth(toolbox, jc);
 }
 
@@ -100,6 +107,11 @@ function lWidth(Element, jc) {
 	lwsize.value = lwidth.value;
 
 	lwidth.addEventListener('mousemove', function(e) {
+		lwsize.value = lwidth.value;
+		jc.strokewidth = lwsize.value;
+	});
+	lwidth.addEventListener('touchmove', function(e) {
+		e.preventDefault();
 		lwsize.value = lwidth.value;
 		jc.strokewidth = lwsize.value;
 	});

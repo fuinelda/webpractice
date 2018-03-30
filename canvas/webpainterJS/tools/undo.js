@@ -48,20 +48,22 @@ function insertURBtn(toolbox, jc) {
 	var rdbtn = document.createElement('div');
 
 	udbtn.addEventListener('click',function(e) {
-		cUndo(jc.octx, jc.ocanvas);
+		e.preventDefault();cUndo(jc.octx, jc.ocanvas);
 	});
 
 	rdbtn.addEventListener('click',function(e) {
-		cRedo(jc.octx, jc.ocanvas);
+		e.preventDefault();cRedo(jc.octx, jc.ocanvas);
 	});
 
-	udbtn.addEventListener('touchstart',function(e) {
+	/* udbtn.addEventListener('touchend',function(e) {
+		e.preventDefault();
 		cUndo(jc.octx, jc.ocanvas);
 	});
 
-	rdbtn.addEventListener('touchstart',function(e) {
+	rdbtn.addEventListener('touchend',function(e) {
+		e.preventDefault();
 		cRedo(jc.octx, jc.ocanvas);
-	});
+	}); */
 
 	udbtn.appendChild(document.createTextNode('Undo'));
 	rdbtn.appendChild(document.createTextNode('Redo'));
