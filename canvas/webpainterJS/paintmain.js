@@ -23,7 +23,7 @@ window.onload = function() {
 	curcanvas.id = 'layer0';
 	curcanvas.width = canvas.width;
 	curcanvas.height = canvas.height;
-	curcanvas.style = 'border:1px solid gray;position:absolute;top:0px;left:0px;';
+	curcanvas.style = 'border:1px solid gray;position:absolute;top:0px;left:0px;z-index:50000;';
 	canvas.parentNode.insertBefore(curcanvas,document.getElementById('tools'));
 	var curctx = curcanvas.getContext('2d');
 	var draw = false;
@@ -176,4 +176,14 @@ function toolCommonEvents(jc) {
 		if (jc.curtool != 'paintbucket') cPush(jc.octx, jc.ocanvas, jc.canvas);
 		jc.ctx.clearRect(0, 0, jc.canvas.width, jc.canvas.height);
 	});
+}
+
+function layerToJc(jc) {
+	if(curlayer == undefined) return jc;
+	else {
+		selectedLayer = layers.filter(function(el) { return el.name == curlayer})[0];
+		jc.canvas = selectedLayer.canvas;
+		jc.ctx = selectedLayer.ctx;console.log('a',jc);
+		return jc;
+	}
 }

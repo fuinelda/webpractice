@@ -1,5 +1,6 @@
 //자유선 그리기 - stroke를 이용함
 function pencil(jc){
+	// jc = layerToJc(jc);
 	jc.canvas.addEventListener('mousedown', function(e) {
 		jc.ctx.moveTo(jc.starts.x,jc.starts.y);
 		

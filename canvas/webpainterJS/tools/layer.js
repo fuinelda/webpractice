@@ -20,10 +20,14 @@ function insertLayerTool() {
     var layerTool = document.createElement('div');
     layerTool.className = 'layerTool';
     layerTool.innerHTML = '';
-    
+
+    var label = document.createElement('div');
+    label.appendChild(document.createTextNode('레이어'));
+
     var addbtn = document.createElement('div');
     addbtn.appendChild(document.createTextNode('+'));
     
+    layerTool.appendChild(label);
     layerTool.appendChild(addbtn);
     layerTool.appendChild(drawLayers());
     
@@ -32,14 +36,12 @@ function insertLayerTool() {
         var addedLayer = drawLayers();
         
         layerTool.appendChild(addedLayer);
-        
     });
     document.getElementById('under_tools').appendChild(layerTool);
 }
 
 function drawLayers() {
     for(var i = 0; i < layers.length; i++) {
-        console.log(i);
         var addedLayer = document.createElement('span');
         var addedImg = document.createElement('img');
         addedImg.src = layers[i].canvas.toDataURL();
@@ -47,7 +49,18 @@ function drawLayers() {
         addedImg.style.height = '50px';
         addedImg.style.margin = '2px';
         addedImg.setAttribute('layerName', layers[i].name);
+        addedLayer.className = 'layer-image';
         addedLayer.appendChild(addedImg);
+        addedLayer.addEventListener('click', selectedLayer);
     }
     return addedLayer;
+}
+
+function selectedLayer(e) {console.log('b');
+    var layerSpans = document.querySelectorAll('.layer-image img');
+    for(var i=0;i<layerSpans.length;i++) {
+        layerSpans[i].style.borderWidth = '1px';
+    }
+    e.target.style.borderWidth = '2px';
+    curlayer = e.target.getAttribute('layername');
 }
