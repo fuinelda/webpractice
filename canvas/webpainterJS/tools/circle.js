@@ -20,6 +20,7 @@ function circle(jc){
 
 		if(jc.curtool == 'drawcircle') {
 			var curLayer = returnCanvas();
+			curLayer.ctx.beginPath();
 			var r = Math.sqrt(Math.pow(cx-jc.starts.x,2) + Math.pow(cy-jc.starts.y,2));
 			curLayer.ctx.arc(jc.starts.x, jc.starts.y, r, 0, 2*Math.PI);
 			curLayer.ctx.stroke();
@@ -41,6 +42,23 @@ function circle(jc){
 			jc.ctx.arc(jc.starts.x, jc.starts.y, r, 0, 2*Math.PI);
 			jc.ctx.stroke();
 			jc.ctx.closePath();
+		}
+	});
+	jc.canvas.addEventListener('touchend',function(e) {
+		e.preventDefault();
+		var touches = e.changedTouches;
+		var targetRect = e.target.getBoundingClientRect();
+		var cx = (touches[0].pageX && touches[0].pageX - (targetRect.left + window.scrollX) > 0)?touches[0].pageX - (targetRect.left + window.scrollX):0;
+		var cy = (touches[0].pageY && touches[0].pageY - (targetRect.top + window.scrollY) > 0)?touches[0].pageY - (targetRect.top + window.scrollY):0;
+
+		if(jc.curtool == 'drawcircle') {
+			var curLayer = returnCanvas();
+			curLayer.ctx.beginPath();
+			var r = Math.sqrt(Math.pow(cx-jc.starts.x,2) + Math.pow(cy-jc.starts.y,2));
+			curLayer.ctx.arc(jc.starts.x, jc.starts.y, r, 0, 2*Math.PI);
+			curLayer.ctx.stroke();
+			curLayer.ctx.closePath();
+			cPush(curLayer.canvas);
 		}
 	});
 }
