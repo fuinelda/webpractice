@@ -1,7 +1,3 @@
-var layers = [];
-var layer_cnt = 1;
-var curlayer = 'layer0';
-
 //layer 추가
 function addLayer() {
 	var canvas = document.getElementById('c2');
@@ -10,9 +6,11 @@ function addLayer() {
 	curcanvas.width = canvas.width;
 	curcanvas.height = canvas.height;
 	curcanvas.style = 'border:1px solid gray;position:absolute;top:0px;left:0px;';
-	canvas.parentNode.insertBefore(curcanvas,document.getElementById('tools'));
+	canvas.parentNode.insertBefore(curcanvas,document.getElementById('draw'));
 	var curctx = curcanvas.getContext('2d');
-	layers.push({name: 'layer' + layer_cnt, canvas: curcanvas, ctx: curctx});
+    layers.push({name: 'layer' + layer_cnt, canvas: curcanvas, ctx: curctx});
+    layerSteps['layer' + layer_cnt] = -1;
+    layerHistory['layer' + layer_cnt] = [];
     layer_cnt++;
 }
 
@@ -45,7 +43,8 @@ function drawLayers() {
         var addedLayer = document.createElement('span');
         var addedImg = document.createElement('img');
         addedImg.src = layers[i].canvas.toDataURL();
-        addedImg.style.border = '1px solid black';
+        if(curlayer == layers[i].name) addedImg.style.border = '2px solid black';
+        else addedImg.style.border = '1px solid black';
         addedImg.style.height = '50px';
         addedImg.style.margin = '2px';
         addedImg.setAttribute('layerName', layers[i].name);
@@ -56,7 +55,7 @@ function drawLayers() {
     return addedLayer;
 }
 
-function selectedLayer(e) {console.log('b');
+function selectedLayer(e) {
     var layerSpans = document.querySelectorAll('.layer-image img');
     for(var i=0;i<layerSpans.length;i++) {
         layerSpans[i].style.borderWidth = '1px';

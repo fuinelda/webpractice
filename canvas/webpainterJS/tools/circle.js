@@ -13,6 +13,20 @@ function circle(jc){
 			jc.ctx.closePath();
 		}
 	});
+	jc.canvas.addEventListener('mouseup',function(e) {
+		e.preventDefault();
+		var cx = (e.offsetX)?e.offsetX:0;
+		var cy = (e.offsetY)?e.offsetY:0;
+
+		if(jc.curtool == 'drawcircle') {
+			var curLayer = returnCanvas();
+			var r = Math.sqrt(Math.pow(cx-jc.starts.x,2) + Math.pow(cy-jc.starts.y,2));
+			curLayer.ctx.arc(jc.starts.x, jc.starts.y, r, 0, 2*Math.PI);
+			curLayer.ctx.stroke();
+			curLayer.ctx.closePath();
+			cPush(curLayer.canvas);
+		}
+	});
 	jc.canvas.addEventListener('touchmove',function(e) {
 		e.preventDefault();
 		var touches = e.changedTouches;

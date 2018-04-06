@@ -7,9 +7,22 @@ function rect(jc){
 		if(jc.draw==true && jc.curtool == 'drawrect') {
 			jc.ctx.beginPath();
 			jc.ctx.clearRect(0, 0, jc.canvas.width, jc.canvas.height);
-			jc.ctx.rect(jc.starts.x, jc.starts.y, e.offsetX-jc.starts.x, e.offsetY-jc.starts.y);
+			jc.ctx.rect(jc.starts.x, jc.starts.y, cx-jc.starts.x, cy-jc.starts.y);
 			jc.ctx.stroke();
 			jc.ctx.closePath();
+		}
+	});
+	jc.canvas.addEventListener('mouseup',function(e) {
+		e.preventDefault();
+		var cx = (e.offsetX)?e.offsetX:0;
+		var cy = (e.offsetY)?e.offsetY:0;
+
+		if(jc.curtool == 'drawrect') {
+			var curLayer = returnCanvas();
+			curLayer.ctx.rect(jc.starts.x, jc.starts.y, cx-jc.starts.x, cy-jc.starts.y);
+			curLayer.ctx.stroke();
+			curLayer.ctx.closePath();
+			cPush(curLayer.canvas);
 		}
 	});
 	jc.canvas.addEventListener('touchmove',function(e) {
@@ -24,6 +37,21 @@ function rect(jc){
 			jc.ctx.rect(jc.starts.x, jc.starts.y, cx-jc.starts.x, cy-jc.starts.y);
 			jc.ctx.stroke();
 			jc.ctx.closePath();
+		}
+	});
+	jc.canvas.addEventListener('touchend',function(e) {
+		e.preventDefault();
+		var touches = e.changedTouches;
+		var targetRect = e.target.getBoundingClientRect();
+		var cx = (touches[0].pageX && touches[0].pageX - (targetRect.left + window.scrollX) > 0)?touches[0].pageX - (targetRect.left + window.scrollX):0;
+		var cy = (touches[0].pageY && touches[0].pageY - (targetRect.top + window.scrollY) > 0)?touches[0].pageY - (targetRect.top + window.scrollY):0;
+
+		if(jc.curtool == 'drawrect') {
+			var curLayer = returnCanvas();
+			curLayer.ctx.rect(jc.starts.x, jc.starts.y, cx-jc.starts.x, cy-jc.starts.y);
+			curLayer.ctx.stroke();
+			curLayer.ctx.closePath();
+			cPush(curLayer.canvas);
 		}
 	});
 }

@@ -12,6 +12,9 @@ for (jsSrc in jsSrcs) {
 	document.write('<script src="./webpainterJS' + jsSrcs[jsSrc] + '"></script>');
 }
 
+var layers = [];
+var layer_cnt = 1;
+var curlayer = 'layer0';
 
 //본편
 window.onload = function() {
@@ -19,27 +22,33 @@ window.onload = function() {
 	var ctx = canvas.getContext('2d');
 
 	var curtool;
-	var curcanvas = document.createElement('canvas');
-	curcanvas.id = 'layer0';
-	curcanvas.width = canvas.width;
-	curcanvas.height = canvas.height;
-	curcanvas.style = 'border:1px solid gray;position:absolute;top:0px;left:0px;z-index:50000;';
-	canvas.parentNode.insertBefore(curcanvas,document.getElementById('tools'));
-	var curctx = curcanvas.getContext('2d');
+	var drawcanvas = document.createElement('canvas');
+	drawcanvas.id = 'draw';
+	drawcanvas.width = canvas.width;
+	drawcanvas.height = canvas.height;
+	drawcanvas.style = 'border:1px solid gray;position:absolute;top:0px;left:0px;z-index:50000;';
+	canvas.parentNode.insertBefore(drawcanvas,document.getElementById('tools'));
+	var drawctx = drawcanvas.getContext('2d');
 	var draw = false;
 	var color = '#000000';
 	var strokewidth = 3;
 	var linecap = 'round';
 	var linejoin = 'round';
 	
-
+	var curcanvas = document.createElement('canvas');
+	curcanvas.id = 'layer0';
+	curcanvas.width = canvas.width;
+	curcanvas.height = canvas.height;
+	curcanvas.style = 'border:1px solid gray;position:absolute;top:0px;left:0px;';
+	canvas.parentNode.insertBefore(curcanvas,document.getElementById('draw'));
+	var curctx = curcanvas.getContext('2d');
 	layers.push({name: 'layer0', canvas: curcanvas, ctx: curctx});
 	
 	var colors = ['000000','0000ff','ffff00','ff0000','606060','ffffff'];
 	var jsonCanvas = {'ocanvas' : canvas,
 			'octx' : ctx,
-			'canvas': curcanvas, 
-			'ctx' : curctx,
+			'canvas': drawcanvas, 
+			'ctx' : drawctx,
 			'draw' : draw,
 			'color' : color,
 			'colors' : colors,
@@ -132,58 +141,57 @@ function toolCommonEvents(jc) {
 	var startX, startY;
 
 	jc.canvas.addEventListener('mousedown', function(e) {
+		var curLayer = returnCanvas();
 		var startX = (e.offsetX)?e.offsetX:0;
 		var startY = (e.offsetY)?e.offsetY:0;
 		jc.starts = {'x' : startX, 'y' : startY};
 
-		jc.ctx.beginPath();
+		curLayer.ctx.beginPath();
 		jc.draw = true;
-		jc.ctx.strokeStyle = jc.color;		
-		jc.ctx.lineWidth = jc.strokewidth;
-		jc.ctx.lineCap = jc.linecap;
-		jc.ctx.lineJoin = jc.linejoin;
+		curLayer.ctx.strokeStyle = jc.color;		
+		curLayer.ctx.lineWidth = jc.strokewidth;
+		curLayer.ctx.lineCap = jc.linecap;
+		curLayer.ctx.lineJoin = jc.linejoin;
 	});
 	jc.canvas.addEventListener('mousemove',function(e) {
+		var curLayer = returnCanvas();
 		var cx = (e.offsetX)?e.offsetX:0;
 		var cy = (e.offsetY)?e.offsetY:0;
 			
 		document.getElementById('coords').innerHTML = 'X : ' + cx + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y : ' + cy;
 	});
 	jc.canvas.addEventListener('mouseup',function(e) {
-		jc.ctx.stroke();
+		var curLayer = returnCanvas();
+		curLayer.ctx.stroke();
 		jc.draw = false;
-		if (jc.curtool != 'paintbucket') cPush(jc.octx, jc.ocanvas, jc.canvas);
 		jc.ctx.clearRect(0, 0, jc.canvas.width, jc.canvas.height);
+		// jc.ctx.stroke();
 	});
 	//터치 이벤트
 	jc.canvas.addEventListener('touchstart', function(e) {
+		var curLayer = returnCanvas();
 		var touches = e.changedTouches;
 		var targetRect = e.target.getBoundingClientRect();
 		var startX = (touches[0].pageX && touches[0].pageX - (targetRect.left + window.scrollX) > 0)?touches[0].pageX - (targetRect.left + window.scrollX):0;
 		var startY = (touches[0].pageY && touches[0].pageY - (targetRect.top + window.scrollY) > 0)?touches[0].pageY - (targetRect.top + window.scrollY):0;
 		jc.starts = {'x' : startX, 'y' : startY};
 
-		jc.ctx.beginPath();
+		curLayer.ctx.beginPath();
 		jc.draw = true;
-		jc.ctx.strokeStyle = jc.color;		
-		jc.ctx.lineWidth = jc.strokewidth;
-		jc.ctx.lineCap = jc.linecap;
-		jc.ctx.lineJoin = jc.linejoin;
+		curLayer.ctx.strokeStyle = jc.color;		
+		curLayer.ctx.lineWidth = jc.strokewidth;
+		curLayer.ctx.lineCap = jc.linecap;
+		curLayer.ctx.lineJoin = jc.linejoin;
 	});
 	jc.canvas.addEventListener('touchend',function(e) {
-		jc.ctx.stroke();
+		var curLayer = returnCanvas();
+		curLayer.ctx.stroke();
 		jc.draw = false;
-		if (jc.curtool != 'paintbucket') cPush(jc.octx, jc.ocanvas, jc.canvas);
 		jc.ctx.clearRect(0, 0, jc.canvas.width, jc.canvas.height);
 	});
 }
 
-function layerToJc(jc) {
-	if(curlayer == undefined) return jc;
-	else {
-		selectedLayer = layers.filter(function(el) { return el.name == curlayer})[0];
-		jc.canvas = selectedLayer.canvas;
-		jc.ctx = selectedLayer.ctx;console.log('a',jc);
-		return jc;
-	}
+function returnCanvas() {
+	var selectedLayer = layers.filter(function(el) { return el.name == curlayer})[0];
+	return selectedLayer;
 }
