@@ -5,22 +5,23 @@ function bucket(jc){
 		var cy = (e.offsetY)?e.offsetY:0;
 		
 		if (jc.curtool == 'paintbucket') {
-			var imgdata = jc.octx.getImageData(0, 0, jc.ocanvas.width, jc.ocanvas.height);
+			var curLayer = returnCanvas();
+			var imgdata = curLayer.ctx.getImageData(0, 0, curLayer.canvas.width, curLayer.canvas.height);
 			var data = imgdata.data;
-			var i = (cy * jc.ocanvas.width + cx) * 4;
-			var rgba = getRgba(data, cx, cy, jc.ocanvas.width);
+			var i = (cy * curLayer.canvas.width + cx) * 4;
+			var rgba = getRgba(data, cx, cy, curLayer.canvas.width);
 			var paintcolor = colorCodetoRGBA(jc.color);
 			// console.log(paintcolor,rgba);
 			if(rgba[0] == paintcolor[0] && rgba[1] == paintcolor[1] && rgba[2] == paintcolor[2] && rgba[3] == paintcolor[3]) {return;}
 			imgdata.data = floodFill(jc, cx, cy, data, rgba, paintcolor);
 			
-			jc.octx.putImageData(imgdata,0 ,0 );
+			curLayer.ctx.putImageData(imgdata,0 ,0 );
 			
-			cPush(jc.octx, jc.ocanvas, jc.canvas);
+			cPush(curLayer.canvas);
 		}
 		
 	});
-	jc.canvas.addEventListener('touchstart', function(e){
+	/* jc.canvas.addEventListener('touchstart', function(e){
 		var touches = e.changedTouches;
 		var targetRect = e.target.getBoundingClientRect();
 		var cx = (touches[0].pageX && touches[0].pageX - (targetRect.left + window.scrollX) > 0)?touches[0].pageX - (targetRect.left + window.scrollX):0;
@@ -41,7 +42,7 @@ function bucket(jc){
 			cPush(jc.octx, jc.ocanvas, jc.canvas);
 		}
 		
-	});
+	}); */
 }
 
 //현 위치의 rgba값을 받아옴
@@ -64,6 +65,7 @@ function fillColor(data, rgba, paintcolor, i) {
 
 /***색 채우는 방식 - flood Fill 방식이라 함*/
 function floodFill(jc, cx, cy, data, rgba, paintcolor) {
+	var curLayer = returnCanvas();
 	var newpos, x, y, pixelpos;
 	var reachleft = false;
 	var reachright = false;
@@ -74,19 +76,19 @@ function floodFill(jc, cx, cy, data, rgba, paintcolor) {
 		x = newpos[0];
 		y = newpos[1];
 		
-		pixelpos = (y * jc.ocanvas.width + x) * 4;
+		pixelpos = (y * curLayer.canvas.width + x) * 4;
 		
 		while(y >= 0 && matchcolors(data, pixelpos, rgba, paintcolor)) {
 			y -= 1;
-			pixelpos -= jc.ocanvas.width * 4;
+			pixelpos -= curLayer.canvas.width * 4;
 		}
 
-		pixelpos += jc.ocanvas.width * 4;
+		pixelpos += curLayer.canvas.width * 4;
 		//y += 1;
 		reachleft = false;
 		reachright = false;
 	
-		while (y <= jc.ocanvas.height && matchcolors(data, pixelpos, rgba, paintcolor))	{
+		while (y <= curLayer.canvas.height && matchcolors(data, pixelpos, rgba, paintcolor))	{
 			y += 1;
 			
 			fillColor(data, rgba, paintcolor, pixelpos);
@@ -102,7 +104,7 @@ function floodFill(jc, cx, cy, data, rgba, paintcolor) {
 					reachleft = false;
 				}
 			}
-			if(x < jc.ocanvas.width - 1) {
+			if(x < curLayer.canvas.width - 1) {
 				if(matchcolors(data, pixelpos + 4, rgba, paintcolor)) {
 					if(!reachright) {
 						pixelstack.push([x + 1, y]);
@@ -113,7 +115,7 @@ function floodFill(jc, cx, cy, data, rgba, paintcolor) {
 				}
 			}
 			
-			pixelpos += jc.ocanvas.width * 4;
+			pixelpos += curLayer.canvas.width * 4;
 		}
 	}
 	return data;
