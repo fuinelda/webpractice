@@ -153,13 +153,13 @@ function toolCommonEvents(jc) {
 		curLayer.ctx.lineCap = jc.linecap;
 		curLayer.ctx.lineJoin = jc.linejoin;
 	});
-	jc.canvas.addEventListener('mousemove',function(e) {
+	/* jc.canvas.addEventListener('mousemove',function(e) {
 		var curLayer = returnCanvas();
 		var cx = (e.offsetX)?e.offsetX:0;
 		var cy = (e.offsetY)?e.offsetY:0;
 			
 		document.getElementById('coords').innerHTML = 'X : ' + cx + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Y : ' + cy;
-	});
+	}); */
 	jc.canvas.addEventListener('mouseup',function(e) {
 		var curLayer = returnCanvas();
 		curLayer.ctx.stroke();
@@ -194,4 +194,15 @@ function toolCommonEvents(jc) {
 function returnCanvas() {
 	var selectedLayer = layers.filter(function(el) { return el.name == curlayer})[0];
 	return selectedLayer;
+}
+
+function saveImage() {
+	console.log('aaa');
+	var canvas = document.getElementById('c2');
+	var ctx = canvas.getContext('2d');
+	for(i = 0; i < layers.length; i++) {
+		var canPic = new Image();
+		canPic.src = layers[i].canvas.toDataURL();
+		ctx.drawImage(canPic, 0, 0);
+	}
 }
