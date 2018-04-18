@@ -8,11 +8,13 @@ var Webgraffity = (function() {
 	var cStep = -1;
 	var layerSteps = {'layer0':-1};
 
-	var selector = '';
+	var oCanvasSelector = '';
+	var toolBoxSelector = '#tools';
+	var layerBoxSelector = '#layers';
 
 	//툴박스에 툴 추가 및 제어 쯤
 	function toolCtrl(jc) {
-		var toolbox = document.getElementById('tools');
+		var toolbox = document.querySelector(toolBoxSelector);
 		var cp = cpallette(jc);
 		toolbox.appendChild(cp);
 
@@ -31,7 +33,7 @@ var Webgraffity = (function() {
 
 	//선택된 툴 표시
 	function toolSelected(Element) {
-		var toolbtns = document.getElementById('tools').getElementsByClassName('tool');
+		var toolbtns = document.querySelector(toolBoxSelector).getElementsByClassName('tool');
 		for (i in toolbtns) {
 			toolbtns[i].style = 'background:;';	
 		}
@@ -143,7 +145,7 @@ var Webgraffity = (function() {
 	}
 
 	function saveImage() {
-		var canvas = document.querySelector(selector);
+		var canvas = document.querySelector(oCanvasSelector);
 		var ctx = canvas.getContext('2d');
 		for(i = 0; i < layers.length; i++) {
 			var canPic = new Image();
@@ -401,7 +403,7 @@ var Webgraffity = (function() {
 	}
 		//layer 추가
 	function addLayer() {
-		var canvas = document.querySelector(selector);
+		var canvas = document.querySelector(oCanvasSelector);
 		var curcanvas = document.createElement('canvas');
 		curcanvas.id = 'layer' + layer_cnt;
 		curcanvas.width = canvas.width;
@@ -436,7 +438,7 @@ var Webgraffity = (function() {
 			
 			layerTool.appendChild(addedLayer);
 		});
-		document.getElementById('under_tools').appendChild(layerTool);
+		document.querySelector(layerBoxSelector).appendChild(layerTool);
 	}
 
 	function drawLayers() {
@@ -897,8 +899,8 @@ var Webgraffity = (function() {
 	}
 	return {
 		setPainter : function (text) {
-			selector = text;
-			var canvas = document.querySelector(selector);
+			oCanvasSelector = text;
+			var canvas = document.querySelector(oCanvasSelector);
 			var ctx = canvas.getContext('2d');
 	
 			var curtool;
@@ -907,7 +909,7 @@ var Webgraffity = (function() {
 			drawcanvas.width = canvas.width;
 			drawcanvas.height = canvas.height;
 			drawcanvas.style = 'border:1px solid gray;position:absolute;top:0px;left:0px;z-index:50000;';
-			canvas.parentNode.insertBefore(drawcanvas,document.getElementById('tools'));
+			canvas.parentNode.insertBefore(drawcanvas,document.querySelector(toolBoxSelector));
 			var drawctx = drawcanvas.getContext('2d');
 			var draw = false;
 			var color = '#000000';
@@ -944,7 +946,7 @@ var Webgraffity = (function() {
 			document.getElementById('pcurcolor').style.background = color;
 		},
 		getImageText : function() {
-			var canvas = document.querySelector(selector);
+			var canvas = document.querySelector(oCanvasSelector);
 			var ctx = canvas.getContext('2d');
 			for(i = 0; i < layers.length; i++) {
 				var canPic = new Image();
