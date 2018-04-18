@@ -4,19 +4,26 @@
 	<title>캔버스</title>
 <meta http-equiv = 'text/css' charset='utf-8'></meta>
 <link rel='stylesheet' type='text/css' href='./css/style.css'></link>
-<script src='./webpainterJS/paintmain.js'></script>
+<!-- <script src='./webpainterJS/paintmain.js'></script> -->
+<script src='./webpainterJS/webgraffity.js'></script>
 <script>
 	//본편
+	var canvas = Webgraffity;
 	window.onload = function() {
-		setPainter('#c2');
+		canvas.setPainter('#testCanvas');
 	};
+	function saveImage() {
+		var imgData = canvas.getImageText();
+		console.log(imgData);
+	}
+	
 </script>
 </head>
 <body style="margin: 0;">
 캔버스 기능을 사용해서 그림 그리기 실험<br />
 <div style='position:relative;'>
 	<!--<canvas id = 'c1' width=500 height=500 style='border: 1px solid gray;background:#ddaabb;'></canvas>-->
-	<canvas id = 'c2' width=500 height=500 style='border: 1px solid gray;'></canvas>
+	<canvas id = 'testCanvas' width=500 height=500 style='border: 1px solid gray;'></canvas>
 	<div id='tools'><p>도구들</p>
 	</div>
 	<div id="under_tools"></div>
