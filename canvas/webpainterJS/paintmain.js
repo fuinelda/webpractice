@@ -16,9 +16,8 @@ var layers = [];
 var layer_cnt = 1;
 var curlayer = 'layer0';
 
-//본편
-window.onload = function() {
-	var canvas = document.getElementById('c2');
+function setPainter(selector) {
+	var canvas = document.querySelector(selector);
 	var ctx = canvas.getContext('2d');
 
 	var curtool;
@@ -62,7 +61,7 @@ window.onload = function() {
 	toolCtrl(jsonCanvas);
 	
 	document.getElementById('pcurcolor').style.background = color;
-};
+}
 
 //툴박스에 툴 추가 및 제어 쯤
 function toolCtrl(jc) {
